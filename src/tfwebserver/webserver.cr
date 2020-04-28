@@ -2,6 +2,7 @@
 require "kemal"
 require "toml"
 require "./utils/*"
+require "json"
 
 module TFWeb
   module WebServer
@@ -208,6 +209,18 @@ module TFWeb
       else
         self.do404 env, "file #{filepath} doesn't exist on wiki/website #{name}"
       end
+    end
+    post "/api/members/list" do |env|
+      projects_json = env.params.json.fetch("projects", %([])).to_s
+      contribution_types_json = env.params.json.fetch("contribution_types", %([])).to_s
+      projects = Array(Int32).from_json(projects_json)
+      contribution_types = Array(Int32).from_json(contribution_types_json)
+      env.response.content_type = "application/json"
+      @@team.list_members(projects, contribution_types)
+    end
+    post "/api/partners/list" do |env|
+      env.response.content_type = "application/json"
+      @@community.list_partners
     end
   end
 end
