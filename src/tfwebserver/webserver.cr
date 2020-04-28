@@ -1,6 +1,7 @@
 # Matches /hello/kemal
 require "kemal"
 require "toml"
+require "./utils/*"
 
 module TFWeb
   module WebServer
@@ -10,6 +11,8 @@ module TFWeb
     @@wikis = Hash(String, Wiki).new
     @@websites = Hash(String, Website).new
     @@include_processor = IncludeProcessor.new
+    @@team = Team.new
+    @@community = Community.new
 
     def self.prepare_markdowndocs_backend
       @@wikis.each do |k, wiki|
@@ -206,6 +209,5 @@ module TFWeb
         self.do404 env, "file #{filepath} doesn't exist on wiki/website #{name}"
       end
     end
-
   end
 end
