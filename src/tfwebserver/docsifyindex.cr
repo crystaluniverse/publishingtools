@@ -1,3 +1,6 @@
+module TFWeb
+  @@docsify_index = %(
+    <!-- index.html -->
 
     <!DOCTYPE html>
     <html>
@@ -5,35 +8,46 @@
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta charset="UTF-8">
+
+      <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/vue.css"> -->
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
     </head>
     <body>
       <div id="app"></div>
       <script>
         window.$docsify = {
-            name: "<%= @name %>",
-            repo: "<%= url_as_https %>",
+            name: '{{THENAME}}', //TODO: need to become template variable
+            repo: 'https://github.com/threefoldfoundation/info_tfgridsdk',//TODO: need to become template variable
             loadSidebar: true,
             loadNavbar: true,
             auto2top: true,
-            search: 'auto',
+
+            search: 'auto', // default
+
             remoteMarkdown: {
               tag: 'remoteMarkdownUrl',
+            },
+
+            alias: {
+              '/.*/_sidebar.md': '/_sidebar.md',
             },
             subMaxLevel: 0,
             themeable: {
                 readyTransition : true, // default
                 responsiveTables: true  // default
             },
-            // complete configuration parameters
-            search: {
-                maxAge: 86400000, // Expiration time, the default one day
-                paths: 'auto',
-                placeholder: 'Type to search',
-                noData: 'No Results!',
-                depth: 6,
-                hideOtherSidebarContent: false, // whether or not to hide other sidebar content
-            },
+
+              // complete configuration parameters
+              search: {
+                  maxAge: 86400000, // Expiration time, the default one day
+                  paths: 'auto',
+                  placeholder: 'Type to search',
+                  noData: 'No Results!',
+                  depth: 6,
+                  hideOtherSidebarContent: false, // whether or not to hide other sidebar content
+              },
+
+          //...
         }
       </script>
       <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
@@ -48,5 +62,16 @@
       <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
       <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
       <script src="//unpkg.com/docsify-glossary/dist/docsify-glossary.min.js"></script>
+
+      <!-- <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script> -->
+
+
     </body>
     </html>
+
+    )
+
+  def self.get_index_for(wikiname : String)
+    @@docsify_index.gsub("{{THENAME}}", wikiname)
+  end
+end

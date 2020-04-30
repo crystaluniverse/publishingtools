@@ -1,7 +1,6 @@
 require "./processor"
 require "./processors/*"
 require "file_utils"
-require "colorize"
 
 module TFWeb
   class MarkdownDocs
@@ -70,7 +69,7 @@ module TFWeb
         content = content + "# #{filename} \n"
         content = content + err + "\n"
       end
-      puts "saving errors to #{File.join(path, "errors.md")}".colorize(:blue)
+      puts "saving errors to #{File.join(path, "errors.md")}"
       errpath = File.join(path, "errors.md")
       File.write(errpath, content)
       # add errors.md to files
@@ -79,12 +78,13 @@ module TFWeb
       ferrors.count = 1
       ferrors.paths << errpath
       @dirfilesinfo["errors.md"] = ferrors
+      puts @dirfilesinfo.keys
     end
 
     private def should_skip?(path)
       basename = File.basename(path)
       if @skips.includes?(basename)
-        puts "[+] skipping #{basename}".colorize(:blue)
+        puts "[+] skipping #{basename}"
         return true
       end
     end
@@ -165,7 +165,7 @@ module TFWeb
               end
             end
           rescue exception
-            puts "error in #{p} for #{child} in #{path_obj} #{exception}".colorize(:red)
+            puts "error in #{p} for #{child} in #{path_obj} #{exception}"
             # raise exception
           end
         end

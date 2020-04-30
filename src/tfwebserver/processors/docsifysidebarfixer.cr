@@ -1,5 +1,4 @@
 require "file_utils"
-require "colorize"
 
 module TFWeb
   class DocsifySidebarFixerProcessor < Processor
@@ -10,7 +9,7 @@ module TFWeb
     def process(path_obj, child)
       newname = path_obj.join("_sidebar.md").to_s
       unless File.exists?(path_obj.join("_sidebar.md"))
-        puts "[docsifysidebar]created _sidebar.md from summary.md".colorize(:blue)
+        puts "[docsifysidebar]created _sidebar.md from summary.md"
 
         FileUtils.cp(path_obj.join(child).to_s, path_obj.join("_sidebar.md").to_s)
       end

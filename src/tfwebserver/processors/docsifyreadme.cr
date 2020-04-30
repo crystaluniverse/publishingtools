@@ -1,5 +1,4 @@
 require "file_utils"
-require "colorize"
 
 module TFWeb
   class DocsifyReadmeFixerProcessor < Processor
@@ -12,7 +11,7 @@ module TFWeb
       newname = path_obj.join("README.md").to_s
       unless File.exists?(path_obj.join("README.md"))
         FileUtils.cp(path_obj.join(child).to_s, newname)
-        puts "[docsifyreadme]created readme.md from _sidebar.md".colorize(:blue)
+        puts "[docsifyreadme]created readme.md from _sidebar.md"
       end
       newname
     end
