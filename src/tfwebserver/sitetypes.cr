@@ -95,7 +95,7 @@ module TFWeb
     def repo
       if @url != ""
         repo = TFWeb::GITRepo.new(url: @url, path: @path, branch: @branch, branchswitch: @branchswitch, environment: @environment)
-        @path = repo.ensure_repo
+        @path = repo.path
         repo
       end
     end

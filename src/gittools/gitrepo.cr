@@ -1,4 +1,5 @@
-require "file_utils"
+# require "file_utils"
+require "../crystaltools/*"
 
 module TFWeb
   HTTP_REPO_URL = /(https:\/\/)?(?P<provider>.+)(?P<suffix>\..+)\/(?P<account>.+)\/(?P<repo>.+)/
@@ -19,6 +20,8 @@ module TFWeb
     property environment = "production"
     property codedir = "~/tfweb"
     property depth = 1
+    
+    include CrystalTools
 
     def initialize(@name = "", @path = "", @url = "", @branch = "master", @branchswitch = false, @environment = "production", @depth = 1)
       # TODO: check if ssh-agent loaded, if yes use git notation, otherwise html
@@ -27,9 +30,10 @@ module TFWeb
         error "path and url are empty #{name}"
       end
 
-      #
+      cmd_exists_check git
+
       if @path != ""
-        url_on_fs = try_read_url_from_path
+        url_on_fs = try_read_url_from_path()
         #give url on fs priority
         if url_on_fs !=""
           @url = url
@@ -48,49 +52,39 @@ module TFWeb
       #initialize the git environment, parse the separate properties
       parse_provider_account_repo()
 
-      if sshagent_loaded
+      if sshagent_loaded()
         @url = url_as_ssh
       else
         @url = url_as_https
       end
 
-      pp @url
-      exit 0
 
       #make sure the repository exists
-      dir_repo_ensure()
+      repo_ensure()
+      log "git repo on: #{@path}"
+      log "git url: #{@url}",2
+
 
     end
 
-    private def error(msg)
-      puts msg
-      exit 1
-    end 
-
     #returns true if sshagent is loaded with at least 1 key
     private def sshagent_loaded
-      `ssh-add -l &>/dev/null`
-      $?.success?
+      Executor.exec_ok("ssh-add -l")
     end    
 
     #fetch the url from git config, if not exist return ''
     private def try_read_url_from_path
-      res = `cd #{@path} && git config --get remote.origin.url`
-      if $?.success?
-        res.chomp
-      else
-        ""
-      end
+      Executor.exec("cd #{@path} && git config --get remote.origin.url",error_msg="",stdout=false)
     end
 
     #return the git url as https
-    private def url_as_https
+    def url_as_https
       "https://#{@provider}#{@provider_suffix}/#{@account}/#{@name}"
     end
 
     #return the url in git ssh format
-    private def url_as_ssh
-      "git@#{@provider}:#{@account}/#{@name}"
+    def url_as_ssh
+      "git@#{@provider}#{@provider_suffix}:#{@account}/#{@name}"
     end
 
     def base_dir
@@ -121,6 +115,7 @@ module TFWeb
     #   url_as_ssh(@provider, @account, @reponame)
     # end
 
+    #get the parts of the url, parse to provider, account, name, path properties on obj
     private def parse_provider_account_repo
       account_dir = ""
       rewritten_url = @url # let's assume ssh is the default.
@@ -162,9 +157,9 @@ module TFWeb
     #will then reset to right branch & pull all changes
     #DANGEROUS: local changes will be overwritten
     def reset()
-      `cd #{repo_path} && git clean -xfd && git checkout . && git checkout #{branch} && git pull`
-      if not $?.success?
-        raise "could not reset repo: #{dir_repo}"
+      `cd #{@path} && git clean -xfd && git checkout . && git checkout #{branch} && git pull`
+      if ! $?.success?
+        raise "could not reset repo: #{@path}"
       end
     end
 
@@ -174,14 +169,14 @@ module TFWeb
         account_dir = dir_account_ensure()
         puts "cloning into #{@path} (dir did not exist)"  
         if @depth!=0
-          `cd #{account_dir} && git clone #{@urll} --depth=1 && cd #{@name} && git fetch`
+          Executor.exec("cd #{account_dir} && git clone #{@url} --depth=1 && cd #{@name} && git fetch")
         else
-          `cd #{account_dir} && git clone #{@urll}`
+          Executor.exec("cd #{account_dir} && git clone #{@url}")
         end
         pull()
+        File.join(account_dir, @name)
       end
-
-      File.join(account_dir, @name)
+      ""
     end
 
     # pull if needed, update if the directory is already there & .git found
@@ -195,7 +190,7 @@ module TFWeb
       if force
         reset()
       else
-        `cd #{repo_path} && git pull`
+        `cd #{@path} && git pull`
         $?.success?
       end
     end

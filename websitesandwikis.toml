@@ -15,8 +15,8 @@ branch = "development"
 branchswitch = false
 srcdir = "src"
 environment = "production"
-groups = ["admin"]
-auth = true
+# groups = ["admin"]
+# auth = true
 
 [[wiki]]
 name = "sdk2"
