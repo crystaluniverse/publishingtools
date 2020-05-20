@@ -1,7 +1,8 @@
-/docs/
 /lib/
 /bin/
 /.shards/
 *.dwarf
 .vscode
 /session_data
+session_secret
+docs/

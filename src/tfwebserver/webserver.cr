@@ -10,6 +10,7 @@ module TFWeb
     @@datasites = Hash(String, Data).new
     @@blogs = Hash(String, Blog).new
     @@include_processor = IncludeProcessor.new
+    @@link_expander = LinkExpander.new
 
     def self.get_websites
       @@websites
@@ -22,7 +23,8 @@ module TFWeb
     class MiddleWare < Kemal::Handler
       def initialize(
         @wikis : Hash(String, Wiki),
-        @websites : Hash(String, Website)
+        @websites : Hash(String, Website),
+        @blogs : Hash(String, Blog)
       )
       end
 
@@ -30,6 +32,11 @@ module TFWeb
         path = env.request.path
         path_parts = path.strip("/").split("/")
         sitename = path_parts.shift
+
+        # for now until blog UI is updated to serve on / or something
+        if sitename == "blog" || sitename == "api"
+          return call_next env
+        end
 
         unless @wikis.has_key?(sitename) || @websites.has_key?(sitename)
           if env.request.headers.has_key?("Referer")
@@ -40,13 +47,21 @@ module TFWeb
 
             if @wikis.has_key?(referer_sitename) || @websites.has_key?(referer_sitename)
               #   puts "redirecting for #{referer_sitename} and #{sitename}"
-              return env.redirect "/#{referer_sitename}#{path}" if sitename != "api"
+              return env.redirect "/#{referer_sitename}#{path}"
             end
           end
         end
 
         call_next env
       end
+    end
+
+    def self.config
+      @@config
+    end
+
+    def self.websites
+      @@websites
     end
 
     def self.datasites
@@ -67,6 +82,10 @@ module TFWeb
 
     def self.include_processor
       @@include_processor
+    end
+
+    def self.link_expander
+      @@link_expander
     end
 
     def self.prepare_wiki(wiki : Wiki)
@@ -154,14 +173,23 @@ module TFWeb
 
       self.prepare_wikis
 
-      secret = ENV.fetch("SESSION_SECRET", Random::Secure.hex(64))
+      secret = ENV.fetch("SESSION_SECRET", "")
+      if File.exists?("./session_secret")
+        secret = File.read("./session_secret")
+      else
+        if secret == ""
+          secret = Random::Secure.hex(64)
+          File.write("./session_secret", secret)
+        end
+      end
       Dir.mkdir_p("session_data")
       Kemal::Session.config do |config|
+        config.timeout = 7.days
         config.engine = Kemal::Session::FileEngine.new({:sessions_dir => "./session_data"})
         config.secret = secret
       end
 
-      Kemal.config.add_handler MiddleWare.new(wikis: @@wikis, websites: @@websites)
+      Kemal.config.add_handler MiddleWare.new(wikis: @@wikis, websites: @@websites, blogs: @@blogs)
       Kemal.run
     end
 
@@ -227,7 +255,10 @@ module TFWeb
       else
         # do include macro is possible
         if @@include_processor.match(filepath)
-          new_content = @@include_processor.apply_includes(wikiname, File.read(filepath))
+          content = File.read(filepath)
+          new_content = @@include_processor.apply(content, current_wiki: wikiname)
+          new_content = @@link_expander.apply(new_content)
+
           if new_content.nil?
             send_file env, filepath
           else
@@ -397,6 +428,11 @@ module TFWeb
       else
         self.do404 env, "file #{filepath} doesn't exist on wiki/website #{name}"
       end
+    end
+
+    get "/:name/logout" do |env|
+      env.session.destroy
+      "You have been logged out."
     end
   end
 end

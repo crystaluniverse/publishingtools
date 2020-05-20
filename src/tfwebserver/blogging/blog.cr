@@ -59,17 +59,27 @@ module TFWeb
       property excerpt = ""
       property content = ""
       property content_with_meta = ""
+
+      def to_s
+        "Post #{@title} #{tags} #{published_at}"
+      end
     end
 
     class Link < Utils::YAML::Base
       include YAML::Serializable
       include JSON::Serializable
 
-      property title
-      property link
+      @[YAML::Field(emit_null: true)]
+      property title = ""
 
-      property page : String?
-      property faclass : String?
+      @[YAML::Field(emit_null: true)]
+      property link = ""
+
+      @[YAML::Field(emit_null: true)]
+      property page = ""
+
+      @[YAML::Field(emit_null: true)]
+      property faclass = ""
     end
 
     class Blog < Utils::YAML::Base
@@ -83,6 +93,19 @@ module TFWeb
 
       property posts = [] of TFWeb::Blogging::Post
       property pages = [] of TFWeb::Blogging::Post
+
+      def posts
+        now = Time.utc
+        longest_span = now - Time::UNIX_EPOCH # => Time::Span
+        @posts.sort_by do |p|
+          begin
+            # shortest span
+            now - Time.parse_utc(p.published_at.not_nil!, "%F")
+          rescue ArgumentError | Time::Format::Error
+            longest_span
+          end
+        end
+      end
     end
   end
 end

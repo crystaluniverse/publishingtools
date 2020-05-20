@@ -1,5 +1,5 @@
 # require "file_utils"
-require "../crystaltools/*"
+require "crystaltools"
 
 module TFWeb
   HTTP_REPO_URL = /(https:\/\/)?(?P<provider>.+)(?P<suffix>\..+)\/(?P<account>.+)\/(?P<repo>.+)/

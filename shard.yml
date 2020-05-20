@@ -25,5 +25,8 @@ dependencies:
     github: straight-shoota/crinja 
   kemal-session:
     github: kemalcr/kemal-session
-    branch: master   
+  crystaltools:
+    github: crystaluniverse/crystaltools
+
+
 license: MIT
