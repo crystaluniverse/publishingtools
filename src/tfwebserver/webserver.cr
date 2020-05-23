@@ -1,3 +1,5 @@
+require "file_utils"
+
 module TFWeb
   module WebServer
     include API::Simulator
@@ -152,40 +154,71 @@ module TFWeb
       end
     end
 
+    class SiteCloneStatus
+      property name = ""
+      property success = true
+      property errmsg = ""
+    end
+
     def self.serve(configfilepath : String)
       self.read_config(configfilepath)
       puts "Starting server from config at #{configfilepath}".colorize(:blue)
-      channel_done = Channel(String).new
+      channel_done = Channel(SiteCloneStatus).new
 
       all = @@wikis.values + @@websites.values + @@datasites.values + @@blogs.values
 
       all.each do |site|
         spawn do
-          site.prepare_on_fs
-          channel_done.send(site.name)
+          success = true
+          errmsg = ""
+          sitename = site.name
+          begin
+            site.prepare_on_fs
+          rescue exception
+            errmsg = "#{exception}"
+            success = false
+          end
+          ssc = SiteCloneStatus.new
+          ssc.name = site.name
+          ssc.errmsg = errmsg
+          ssc.success = success
+          channel_done.send(ssc)
         end
       end
 
       all.size.times do
-        ready = channel_done.receive # wait for all of them.
-        puts "wiki/website/datasite #{ready} is ready".colorize(:blue)
+        ssc = channel_done.receive # wait for all of them.
+        ready = ssc.success
+        name = ssc.name
+        if ready == true
+          puts "wiki/website/datasite #{name} is ready".colorize(:green)
+        else
+          puts "wiki/website/datasite #{name} failed #{ssc.errmsg}".colorize(:red)
+        end
       end
 
       self.prepare_wikis
 
+      # at this point ~/tfweb is created
+
+      secret_file_path = Path["~/tfweb/session_secret"].expand(home: true).to_s
+      session_dir_path = Path["~/tfweb/session_data"].expand(home: true).to_s
+      unless File.exists?(session_dir_path)
+        FileUtils.mkdir_p(session_dir_path)
+      end
       secret = ENV.fetch("SESSION_SECRET", "")
-      if File.exists?("./session_secret")
-        secret = File.read("./session_secret")
+      if File.exists?(secret_file_path)
+        secret = File.read(secret_file_path)
       else
         if secret == ""
           secret = Random::Secure.hex(64)
-          File.write("./session_secret", secret)
+          File.write(secret_file_path, secret)
         end
       end
       Dir.mkdir_p("session_data")
       Kemal::Session.config do |config|
         config.timeout = 7.days
-        config.engine = Kemal::Session::FileEngine.new({:sessions_dir => "./session_data"})
+        config.engine = Kemal::Session::FileEngine.new({:sessions_dir => session_dir_path})
         config.secret = secret
       end
 
