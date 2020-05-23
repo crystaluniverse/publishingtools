@@ -34,13 +34,17 @@ module TFWeb
     end
 
     def link(node, entering)
-      linkurl = node.data["destination"].as(String)
-      @links << MDLink.new(url: linkurl, filepath: @filepath)
+      if entering
+        linkurl = node.data["destination"].as(String)
+        @links << MDLink.new(url: linkurl, filepath: @filepath)
+      end
     end
 
     def image(node, entering)
-      imgurl = node.data["destination"].as(String)
-      @images << MDImage.new(url: imgurl, filepath: filepath)
+      if entering
+        imgurl = node.data["destination"].as(String)
+        @images << MDImage.new(url: imgurl, filepath: filepath)
+      end
     end
   end
 
@@ -99,6 +103,8 @@ module TFWeb
       #   puts "abdo #{images}"
       mdimages.uniq.each do |mdimg|
         img = mdimg.url
+        next if img.includes?("/img")
+
         unless img.starts_with?("http")
           # on filesystem
           # TODO: probably should check if has extension instead

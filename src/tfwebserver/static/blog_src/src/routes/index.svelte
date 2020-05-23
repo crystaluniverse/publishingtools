@@ -64,12 +64,6 @@
   }
 </style>
 
-<svelte:head>
-  <title>Blogs</title>
-</svelte:head>
-
-<Nav {segment} {metadata} />
-
-<BlogsList {blogs} />
-
-<Footer />
+<center>
+  <img src="img/loader.gif" />
+</center>
