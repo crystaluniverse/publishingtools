@@ -27,6 +27,8 @@ dependencies:
     github: kemalcr/kemal-session
   crystaltools:
     github: crystaluniverse/crystaltools
-
+  redis:
+    github: stefanwille/crystal-redis
+    version: ~> 2.6.0    
 
 license: MIT

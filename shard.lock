@@ -28,9 +28,17 @@ shards:
     github: icyleaf/markd
     version: 0.2.0
 
+  pool:
+    github: ysbaddaden/pool
+    version: 0.2.3
+
   radix:
     github: luislavena/radix
     version: 0.3.9
+
+  redis:
+    github: stefanwille/crystal-redis
+    version: 2.6.0
 
   toml:
     github: crystal-community/toml.cr
