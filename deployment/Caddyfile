@@ -133,7 +133,7 @@ http://info.threefold.me, https://info.threefold.me {
            if {scheme} is http
            / https://{host}{uri}
         }
-        tls info@threefold.io
+        tls info@threefold.me
         proxy /api localhost:3000/
         proxy / localhost:3000/infome
 }
@@ -143,7 +143,7 @@ http://wiki.threefold.me, https://wiki.threefold.me {
            if {scheme} is http
            / https://{host}{uri}
         }
-        tls info@threefold.io
+        tls info@threefold.me
         proxy /api localhost:3000/
         proxy / localhost:3000/wikime
 }
@@ -226,7 +226,7 @@ http://manual.threefold.io, https://manual.threefold.io {
            if {scheme} is http
            / https://{host}{uri}
         }
-        tls info@threefold.io
+        tls info@threefold.foundation
         proxy /api localhost:3000/
         proxy / localhost:3000/manual
 }
@@ -294,7 +294,7 @@ http://internet9.me, https://internet9.me {
            if {scheme} is http
            / https://{host}{uri}
         }
-        tls info@threefold.io
+        tls info@threefold.me
         proxy /api localhost:3000/
         proxy / localhost:3000/internet9
 }
