@@ -23,7 +23,7 @@ srcdir = ""
 environment = "testing"
 
 [[wiki]]
-name = "crystaltwin"
+name = "info_crystal"
 title = "crystaluniverse Wiki production"
 url = "github.com/crystaluniverse/info_crystal"
 path = ""
