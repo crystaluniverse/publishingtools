@@ -96,24 +96,6 @@ module TFWeb
       @dirfilesinfo["errors.md"] = ferrors
     end
 
-    private def should_skip?(path)
-      # skip path if a directory or
-      if Dir.exists?(path)
-        return true
-      end
-
-      # check if parent directory in @skips
-      dirname = File.basename(File.dirname(path))
-      @skips.each do |skipped|
-        if dirname.downcase.strip == skipped
-          Logger.debug { "skipping file: #{path}..." }
-          return true
-        end
-      end
-
-      return false
-    end
-
     private def cp_r2(src_path : String, dest_path : String)
       if Dir.exists?(src_path)
         Dir.mkdir(dest_path) unless Dir.exists?(dest_path)
