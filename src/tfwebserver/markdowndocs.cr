@@ -95,11 +95,20 @@ module TFWeb
     end
 
     private def should_skip?(path)
+      # skip path if a directory or
+      if Dir.exists?(path)
+        return true
+      end
+
+      # check if parent directory in @skips
+      dirname = File.basename(File.dirname(path))
       @skips.each do |skipped|
-        if path.includes?(skipped)
+        if dirname.downcase.strip == skipped
+          Logger.debug { "skipping file: #{path}..." }
           return true
         end
       end
+
       return false
     end
 
@@ -121,7 +130,7 @@ module TFWeb
 
       @dirfilesinfo = Hash(String, TFWeb::FInfoTracker).new # reset.
       Dir.glob("#{path}/**/*") do |thepath|
-        next if Dir.exists?(thepath) || should_skip?(thepath)
+        next if should_skip?(thepath)
 
         child = File.basename(thepath)
         # next if child.starts_with?("_")
