@@ -75,26 +75,29 @@ https://matchmakers2.threefold.io {
 }
 
 
+http://manual.threefold.io, https://manual.threefold.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy /api localhost:3000/
+        proxy / localhost:3000/manual
+}
+
+http://manual2.threefold.io, https://manual2.threefold.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy /api localhost:3000/
+        proxy / localhost:3000/manual2
+}
+
 http://sdk.threefold.io, https://sdk.threefold.io {
-       redir {
-           if {scheme} is http
-           / https://{host}{uri}
-        }
-        tls info@threefold.io
-        proxy / localhost:3000/sdk
+       redir https://manual.threefold.io{uri}
 }
-
-
-http://sdk2.threefold.io, https://sdk2.threefold.io {
-       redir {
-           if {scheme} is http
-           / https://{host}{uri}
-        }
-        tls info@threefold.io
-        proxy / localhost:3000/sdk2
-}
-
-
 
 http://wiki.threefold.io, https://wiki.threefold.io {
        redir {
@@ -117,6 +120,129 @@ http://wiki2.threefold.io, https://wiki2.threefold.io {
         proxy / localhost:3000/wiki2
 }
 
+
+http://legal.threefold.io, https://legal.threefold.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls no-reply@threefold.tech
+        proxy /api localhost:3000/
+        proxy / localhost:3000/legal
+}
+
+
+http://manual-testnet.threefold.io, https://manual-testnet.threefold.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy /api localhost:3000/
+        proxy / localhost:3000/manual_testnet
+}
+
+http://info-now.threefold.io, https://info-now.threefold.io {
+
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy /api localhost:3000/
+        proxy / localhost:3000/tfnow
+}
+
+
+http://info-now2.threefold.io, https://info-now2.threefold.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy /api localhost:3000/
+        proxy / localhost:3000/tfnow2
+}
+
+
+http://info-now.threefold.me, https://info-now.threefold.me {
+       redir https://info-now.threefold.io{uri}
+}
+
+
+http://info-now2.threefold.me, https://info-now2.threefold.me {
+       redir https://info-now2.threefold.io{uri}
+}
+
+http://vdr.threefold.tech, https://vdr.threefold.tech {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        basicauth / "vdr" ThreeFoldFuture
+        proxy /api localhost:3000/
+        proxy / localhost:3000/vdr
+}
+
+
+http://strategy.threefold.me, https://strategy.threefold.me {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        basicauth / "admin" kds
+        proxy /api localhost:3000/
+        proxy / localhost:3000/strategy
+}
+
+
+http://funding20.threefold.me, https://funding20.threefold.me {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        basicauth / "admin" kds
+        proxy /api localhost:3000/
+        proxy / localhost:3000/funding
+}
+
+http://vdr2.threefold.tech, https://vdr2.threefold.tech {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        basicauth / "vdr" ThreeFoldFuture
+        proxy /api localhost:3000/
+        proxy / localhost:3000/vdr2
+}
+
+
+http://wiki.mazraa.io, https://wiki.mazraa.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy /api localhost:3000/
+        proxy / localhost:3000/wmazraa
+}
+
+
+http://wiki2.mazraa.io, https://wiki2.mazraa.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy /api localhost:3000/
+        proxy / localhost:3000/w2mazraa
+}
+
+
 http://info.threefold.io, https://info.threefold.io {
        redir {
            if {scheme} is http
@@ -124,7 +250,7 @@ http://info.threefold.io, https://info.threefold.io {
         }
         tls info@threefold.io
         proxy /api localhost:3000/
-        proxy / localhost:3000/info
+        proxy / localhost:3000/wiki
 }
 
 
@@ -135,7 +261,7 @@ http://info.threefold.me, https://info.threefold.me {
         }
         tls info@threefold.io
         proxy /api localhost:3000/
-        proxy / localhost:3000/infome
+        proxy / localhost:3000/wiki
 }
 
 http://wiki.threefold.me, https://wiki.threefold.me {
@@ -145,7 +271,7 @@ http://wiki.threefold.me, https://wiki.threefold.me {
         }
         tls info@threefold.io
         proxy /api localhost:3000/
-        proxy / localhost:3000/wikime
+        proxy / localhost:3000/wiki
 }
 
 
@@ -221,14 +347,25 @@ http://wiki2.crystaltwin.me, https://wiki2.crystaltwin.me {
 }
 
 
-http://manual.threefold.io, https://manual.threefold.io {
+http://info.threefold.tech, https://info.threefold.tech {
        redir {
            if {scheme} is http
            / https://{host}{uri}
         }
-        tls info@threefold.io
+        tls support@threefold.tech 
         proxy /api localhost:3000/
-        proxy / localhost:3000/manual
+        proxy / localhost:3000/tftechwiki
+}
+
+
+http://info2.threefold.tech, https://info2.threefold.tech {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls support@threefold.tech 
+        proxy /api localhost:3000/
+        proxy / localhost:3000/tftechwiki2
 }
 
 
@@ -308,3 +445,383 @@ http://info2.internet9.me, https://info2.internet9.me {
         proxy /api localhost:3000/
         proxy / localhost:3000/internet9_2
 }
+
+http://www.freeflownation.org, https://www.freeflownation.org, http://freeflownation.org, https://freeflownation.org {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/freeflownation
+}
+
+http://www2.freeflownation.org, https://www2.freeflownation.org {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/freeflownation2
+}
+
+http://www.3bot.org, https://www.3bot.org , http://3bot.org, https://3bot.org {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/3bot
+}
+
+http://www2.3bot.org, https://www2.3bot.org {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls no-reply@threefold.tech 
+        proxy / localhost:3000/3bot2
+}
+
+http://www.enertia.io, https://www.enertia.io, http://enertia.io, https://enertia.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/enertia
+}
+
+http://www2.enertia.io, https://www2.enertia.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/enertia2
+}
+
+http://www.freeflowtoken.com, https://www.freeflowtoken.com, http://freeflowtoken.com, https://freeflowtoken.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/freeflowtoken
+}
+
+http://www2.freeflowtoken.com, https://www2.freeflowtoken.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/freeflowtoken2
+}
+
+http://www.euroflow.io, https://www.euroflow.io, http://euroflow.io, https://euroflow.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/euroflow
+}
+
+http://www2.euroflow.io, https://www2.euroflow.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/euroflow2
+}
+
+http://www2.mazraa.io, https://www2.mazraa.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/mazraa2
+}
+
+http://www.veda-retreats.com, https://www.veda-retreats.com, http://veda-retreats.com, https://veda-retreats.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/vedaretreats
+}
+
+http://www2.veda-retreats.com, https://www2.veda-retreats.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/vedaretreats2
+}
+
+http://www.es.veda-egypt.com, https://www.es.veda-egypt.com, http://es.veda-egypt.com, https://es.veda-egypt.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/esveda
+}
+
+http://www2.es.veda-egypt.com, https://www2.es.veda-egypt.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/esveda2
+}
+
+http://www.bettertoken.com, https://www.bettertoken.com, http://bettertoken.com, https://bettertoken.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/bettertoken_site
+}
+
+http://www2.bettertoken.com, https://www2.bettertoken.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/bettertoken2_site
+}
+
+http://www.threefold.love, https://www.threefold.love, http://threefold.love, https://threefold.love {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/threefoldlove
+}
+
+http://www2.threefold.love, https://www2.threefold.love {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/threefoldlove2
+}
+
+http://www.openly.live, https://www.openly.live, http://openly.live, https://openly.live {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/openlylive
+}
+
+http://www2.openly.live, https://www2.openly.live {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/openlylive2
+}
+
+http://www.veda-egypt.com, https://www.veda-egypt.com, http://veda-egypt.com, https://veda-egypt.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/vedaegypt
+}
+
+http://www2.veda-egypt.com, https://www2.veda-egypt.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/vedaegypt2
+}
+
+http://www.cultivo.earth, https://www.cultivo.earth, http://cultivo.earth, https://cultivo.earth {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/cultivo
+}
+
+http://www2.cultivo.earth, https://www2.cultivo.earth {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/cultivo2
+}
+
+http://www.goldflow.io, https://www.goldflow.io, http://goldflow.io, https://goldflow.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/goldflow
+}
+
+http://www2.goldflow.io, https://www2.goldflow.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/goldflow2
+}
+
+http://www.farmer.threefold.io, https://www.farmer.threefold.io, http://farmer.threefold.io, https://farmer.threefold.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/farmerthreefold
+}
+
+http://www2.farmer.threefold.io, https://www2.farmer.threefold.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/farmerthreefold2
+}
+
+http://www.crystalhome.org, https://www.crystalhome.org, http://crystalhome.org, https://crystalhome.org {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/crystalhome
+}
+
+http://www2.crystalhome.org, https://www2.crystalhome.org {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/crystalhome2
+}
+
+http://www.veda-masters.com, https://www.veda-masters.com, http://veda-masters.com, https://veda-masters.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/vedamasters
+}
+
+http://www2.veda-masters.com, https://www2.veda-masters.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/vedamasters2
+}
+
+http://www.inid.io, https://www.inid.io, http://inid.io, https://inid.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/inidio
+}
+
+http://www2.inid.io, https://www2.inid.io {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/inidio2
+}
+
+http://www.incubaid.com, https://www.incubaid.com, http://incubaid.com, https://incubaid.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/incubaid
+}
+
+http://www2.incubaid.com, https://www2.incubaid.com {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/incubaid2
+}
+
+http://www.faircoffee.trade, https://www.faircoffee.trade, http://faircoffee.trade, https://faircoffee.trade {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/faircoffee
+}
+
+http://www2.faircoffee.trade, https://www2.faircoffee.trade {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/faircoffee2
+}
+
+http://www.es.freeflownation.org, https://www.es.freeflownation.org, http://es.freeflownation.org, https://es.freeflownation.org {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/es-freeflownation
+}
+
+http://www2.es.freeflownation.org, https://www2.es.freeflownation.org {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/es-freeflownation2
+}
+
+http://www.support.grid.tf, https://www.support.grid.tf, http://support.grid.tf, https://support.grid.tf {
+       redir {
+           if {scheme} is http
+           / https://{host}{uri}
+        }
+        tls info@threefold.io
+        proxy / localhost:3000/tf_support
+}
+
+
