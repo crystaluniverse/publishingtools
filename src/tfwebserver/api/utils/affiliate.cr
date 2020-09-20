@@ -6,22 +6,22 @@ require "./cons"
 module TFWeb
   class Affiliate
     @path = ""
-    property repo_key = ""
+    property datasite_name = ""
     property collected_at = Time.unix(0)
 
     def get_repo
       # get repo from datasites config or directly from a factory
-      unless Config.datasites.has_key?(@repo_key)
-        raise "could not find a configured data site for #{@repo_key}"
+      unless Config.datasites.has_key?(@datasite_name)
+        raise "could not find a configured data site for #{@datasite_name}"
       end
 
-      Config.datasites[@repo_key].repo.not_nil!
+      Config.datasites[@datasite_name].repo.not_nil!
     end
 
     def path
       repo = get_repo
       if (value = @path) == ""
-        @path = File.join(repo.path, @repo_key)
+        @path = File.join(repo.path, @datasite_name)
       else
         value
       end

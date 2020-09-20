@@ -9,7 +9,7 @@ module TFWeb
       @@cache = Hash(String, String).new
 
       def self.cache_until_updated(affiliate, cache_key, proc)
-        name = affiliate.repo_key
+        name = affiliate.datasite_name
         datasite = Config.datasites[name]
 
         to_collect = false
@@ -38,19 +38,19 @@ module TFWeb
         contribution_types = Array(Int32).from_json(contribution_types_json)
         env.response.content_type = "application/json"
 
-        cache_key = "#{@@team.repo_key}_#{projects}_#{contribution_types}"
+        cache_key = "#{@@team.datasite_name}_#{projects}_#{contribution_types}"
         cache_until_updated(@@team, cache_key, ->{ @@team.list_members(projects, contribution_types) })
       end
 
       post "/api/partners/list" do |env|
         env.response.content_type = "application/json"
 
-        cache_until_updated(@@community, @@community.repo_key, ->@@community.list_partners)
+        cache_until_updated(@@community, @@community.datasite_name, ->@@community.list_partners)
       end
 
       post "/api/farmers/list" do |env|
         env.response.content_type = "application/json"
-        cache_until_updated(@@farmers, @@farmers.repo_key, ->@@farmers.list_farmers)
+        cache_until_updated(@@farmers, @@farmers.datasite_name, ->@@farmers.list_farmers)
       end
     end
   end
