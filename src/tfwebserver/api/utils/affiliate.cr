@@ -6,7 +6,8 @@ require "./cons"
 module TFWeb
   class Affiliate
     @path = ""
-    @repo_key = ""
+    property repo_key = ""
+    property collected_at = Time.unix(0)
 
     def get_repo
       # get repo from datasites config or directly from a factory
@@ -47,6 +48,8 @@ module TFWeb
           affiliates_data << affiliate_data
         end
       end
+
+      @collected_at = Time.utc
       affiliates_data
     end
   end
