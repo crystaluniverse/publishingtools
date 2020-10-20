@@ -266,8 +266,8 @@ srcdir = "src"
 environment = "testing"
 domain = "vdr2.threefold.tech"
 
-[[wiki]]
-name = "wiki2020"
+[[www]]
+name = "now"
 url = "github.com/threefoldfoundation/wiki_2020"
 path = ""
 autocommit = false
@@ -276,8 +276,8 @@ branchswitch = true
 srcdir = "dist"
 environment = "production"
 
-[[wiki]]
-name = "wiki2020_stag"
+[[www]]
+name = "now2"
 url = "github.com/threefoldfoundation/wiki_2020"
 path = ""
 autocommit = false
