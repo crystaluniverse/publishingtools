@@ -148,8 +148,8 @@ http://now.threefold.io, https://now.threefold.io {
            / https://{host}{uri}
         }
         tls info@threefold.io
-        proxy / localhost:3000/wiki2020 {
-                without /wiki2020
+        proxy / localhost:3000/now {
+                without /now
         }
 
 }
@@ -159,8 +159,8 @@ http://now2.threefold.io, https://now2.threefold.io {
            / https://{host}{uri}
         }
         tls info@threefold.io
-        proxy / localhost:3000/wiki2020_stag {
-                without /wiki2020_stag
+        proxy / localhost:3000/now2 {
+                without /now2
         }
 
 }
