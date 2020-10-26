@@ -268,7 +268,7 @@ domain = "vdr2.threefold.tech"
 
 [[www]]
 name = "now"
-url = "github.com/threefoldfoundation/wiki_2020"
+url = "github.com/threefoldfoundation/www_tfnow"
 path = ""
 autocommit = false
 branch = "production"
@@ -278,7 +278,7 @@ environment = "production"
 
 [[www]]
 name = "now2"
-url = "github.com/threefoldfoundation/wiki_2020"
+url = "github.com/threefoldfoundation/www_tfnow"
 path = ""
 autocommit = false
 branch = "staging"
