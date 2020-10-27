@@ -333,6 +333,33 @@ module TFWeb
       self.handle_update(env, name, true)
     end
 
+    post "/:name/github_webhooks" do |env|
+      name = env.params.url["name"]
+      body = env.params.json
+
+      pushed_branch = body["ref"].to_s.split("/")[-1]
+      default_branch = ""
+
+      # Get the default branch from toml file 
+      if Config.wikis.has_key?(name)
+        default_branch = Config.wikis[name].branch
+      elsif Config.websites.has_key?(name)
+        default_branch = Config.websites[name].branch
+      elsif Config.blogs.has_key?(name)
+        default_branch = Config.blogs[name].branch
+      elsif Config.datasites.has_key?(name)
+        default_branch = Config.datasites[name].branch
+      end
+
+      # Check Signature of the Webhook to insure it is secure
+      signature = "sha1=" + OpenSSL::HMAC.hexdigest(:sha1, ENV["GITHUB_WEBHOOK_SECRET"], body.to_json)
+      githubsig= env.request.headers["X-Hub-Signature"]
+
+      if signature == githubsig && pushed_branch == default_branch
+        self.handle_update(env, name, true)
+      end
+    end
+
     get "/:name/*filepath" do |env|
       name = env.params.url["name"]
       path = Path.new(env.params.url["filepath"])
