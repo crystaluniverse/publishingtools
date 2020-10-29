@@ -17,6 +17,7 @@ module TFWeb
     property auth = false
     property groups = [] of String
     property aclusers = [] of String
+    property webhook_secret = ""
 
     # @[JSON::Field(ignore: true)]
     # property gitrepo_factory = CrystalTools::GITRepoFactory.new(env: @environment)

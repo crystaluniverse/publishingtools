@@ -419,7 +419,7 @@ environment = "testing"
 - `/:name/github_webhooks` update once push occurs in the default branch
     
     > - To support webhooks, you must add webhooks to your repo. with the same name of the end point **_github_webhooks_**
-    > - Must export **_GITHUB_WEBHOOK_SECRET_** to validate the request.
+    > - Add **_webhook_secret_** to the site configuration if needed.
 
 
 ## preparing static binaries
