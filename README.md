@@ -416,6 +416,10 @@ environment = "testing"
 
 - `/:name/force_update` force updates a wiki to the latest upstream
 - `/:name/merge_update` tries to merge upstream to local
+- `/:name/github_webhooks` update once push occurs in the default branch
+    
+    > - To support webhooks, you must add webhooks to your repo. with the same name of the end point **_github_webhooks_**
+    > - Add **_webhook_secret_** to the site configuration if needed.
 
 
 ## preparing static binaries

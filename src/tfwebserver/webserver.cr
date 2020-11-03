@@ -80,6 +80,12 @@ module TFWeb
       env.response.close
     end
 
+    def self.do401(env, msg)
+      env.response.status_code = 401
+      env.response.print msg
+      env.response.close
+    end
+
     private def self.get_readme_path(wiki, filename)
       path = File.join(wiki.path, wiki.srcdir)
       topfilename = File.basename(path) + ".md"
@@ -331,6 +337,49 @@ module TFWeb
     get "/:name/force_update" do |env|
       name = env.params.url["name"]
       self.handle_update(env, name, true)
+    end
+
+    post "/:name/github_webhooks" do |env|
+      name = env.params.url["name"]
+      body = env.params.json
+
+      pushed_branch = body["ref"].to_s.split("/")[-1]
+      default_branch = ""
+      webhook_secret = ""
+      ignore_security = false
+
+      # Get the default branch from toml file 
+      if Config.wikis.has_key?(name)
+        default_branch = Config.wikis[name].branch
+        webhook_secret = Config.wikis[name].webhook_secret
+      elsif Config.websites.has_key?(name)
+        default_branch = Config.websites[name].branch
+        webhook_secret = Config.websites[name].webhook_secret
+      elsif Config.blogs.has_key?(name)
+        default_branch = Config.blogs[name].branch
+        webhook_secret = Config.blogs[name].webhook_secret
+      elsif Config.datasites.has_key?(name)
+        default_branch = Config.datasites[name].branch
+        webhook_secret = Config.datasites[name].webhook_secret
+      end
+
+      # Check Signature of the Webhook to insure it is secure
+      if !webhook_secret.empty? && env.request.headers.has_key?("X-Hub-Signature") # Both site and repo are configured
+        signature = "sha1=" + OpenSSL::HMAC.hexdigest(:sha1, webhook_secret, body.to_json)
+        githubsig= env.request.headers["X-Hub-Signature"]
+      elsif webhook_secret.empty? && env.request.headers.has_key?("X-Hub-Signature") # site not configured, but repo configured
+        githubsig = env.request.headers["X-Hub-Signature"]
+        do401 env, "Unauthorized, Please add webhook_secret for your site configuration."
+      elsif !webhook_secret.empty? && !env.request.headers.has_key?("X-Hub-Signature") # site configured, but repo not configured
+        signature = "sha1=" + OpenSSL::HMAC.hexdigest(:sha1, webhook_secret, body.to_json)
+        do401 env, "Unauthorized, Please configure webhook secret in your repo."
+      else # Both not configured
+        ignore_security = true
+      end
+      
+      if (ignore_security || signature == githubsig) && pushed_branch == default_branch
+        self.handle_update(env, name, true)
+      end
     end
 
     get "/:name/*filepath" do |env|
