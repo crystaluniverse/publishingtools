@@ -10,11 +10,11 @@ shards:
 
   crystaldocker:
     git: https://github.com/crystaluniverse/crystaldocker.git
-    version: 0.1.0+git.commit.ad269cd10adc77d3ddd70fd9bea682305c5f4c5e
+    version: 0.1.0+git.commit.7904eb73ea8fddb743e0929d0cde21432ad5e8f0
 
   crystaltools:
     git: https://github.com/crystaluniverse/crystaltools.git
-    version: 0.1.0+git.commit.dd81b4b1f2aa5d6a9ff022cf8405108dd56ca532
+    version: 0.1.0+git.commit.44fdf661f51509c2ab66e0dfb8ac2faaef3ae5ce
 
   crystar:
     git: https://github.com/naqvis/crystar.git

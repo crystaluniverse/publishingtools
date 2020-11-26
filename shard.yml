@@ -27,6 +27,6 @@ dependencies:
     branch: master
   crystaltools:
     github: crystaluniverse/crystaltools
-    branch: master
+    commit: 44fdf661f51509c2ab66e0dfb8ac2faaef3ae5ce
 
 license: MIT
