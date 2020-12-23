@@ -60,6 +60,7 @@ module TFWeb
         config.secret = session.secret
       end
 
+      Kemal.config.env = Config.server_config["env"].to_s
       Kemal.config.port = Config.server_config["port"].to_i32
       Kemal.config.host_binding = Config.server_config["addr"].to_s
 
