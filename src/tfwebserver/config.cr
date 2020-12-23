@@ -153,6 +153,7 @@ module TFWeb
         "port"                => serverconfig["port"].as(Int64),
         "addr"                => serverconfig["addr"].as(String),
         "max_update_requests" => max_requests,
+        "env"                 => serverconfig.fetch("env", "production").as(String)
       }
     end
 
