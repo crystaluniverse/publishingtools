@@ -8,10 +8,9 @@ module TFWeb
 
     include Config
 
-    Logger           = Logging.with_colors(self)
-    UpdateLock       = Mutex.new
-    UpdateRequets    = Atomic(Int32).new(0)
-    MaxUpdateRequets = 4
+    Logger        = Logging.with_colors(self)
+    UpdateRequets = Atomic(Int32).new(0)
+    UpdateSet     = Set(String).new
 
     class SiteCloneStatus
       property name = ""
@@ -194,16 +193,24 @@ module TFWeb
     end
 
     private def self.handle_update(env, name, force)
-      Logger.info { "trying to update #{name} force? #{force}" }
+      max_requests = Config.server_config["max_update_requests"].to_i32
+      Logger.info { "trying to update #{name} force? #{force} (max allowed updates: #{max_requests})" }
 
-      if UpdateRequets.get == MaxUpdateRequets
-        Logger.info { "maximum update requests reached" }
-        return render "src/tfwebserver/views/update/try_again.ecr"
+      if UpdateRequets.get >= max_requests
+        Logger.info { "maximum update requests of #{max_requests} reached" }
+        message = "Many update requests are still in progress"
+        return render "src/tfwebserver/views/update/error.ecr"
+      end
+
+      if UpdateSet.includes?(name)
+        message = "A previous update request still in progress"
+        return render "src/tfwebserver/views/update/error.ecr"
       end
 
       UpdateRequets.add(1)
+      UpdateSet.add(name)
 
-      UpdateLock.synchronize do
+      begin
         if Config.wikis.has_key?(name)
           wiki = Config.wikis[name]
           wiki.repo.try do |arepo|
@@ -227,9 +234,15 @@ module TFWeb
           do404 env, "couldn't pull #{name}"
         end
 
-        UpdateRequets.sub(1)
         Logger.info { "updating done, redirecting..." }
         return render "src/tfwebserver/views/update/success.ecr"
+      rescue exception
+        Logger.error(exception: exception) { "error while pulling/updating #{name}" }
+        message = "An error occurred while pulling the repo"
+        return render "src/tfwebserver/views/update/error.ecr"
+      ensure
+        UpdateRequets.sub(1)
+        UpdateSet.delete(name)
       end
     end
 
@@ -350,7 +363,7 @@ module TFWeb
         webhook_secret = ""
         ignore_security = false
 
-        # Get the default branch from toml file 
+        # Get the default branch from toml file
         if Config.wikis.has_key?(name)
           default_branch = Config.wikis[name].branch
           webhook_secret = Config.wikis[name].webhook_secret
@@ -368,7 +381,7 @@ module TFWeb
         # Check Signature of the Webhook to insure it is secure
         if !webhook_secret.empty? && env.request.headers.has_key?("X-Hub-Signature") # Both site and repo are configured
           signature = "sha1=" + OpenSSL::HMAC.hexdigest(:sha1, webhook_secret, body.to_json)
-          githubsig= env.request.headers["X-Hub-Signature"]
+          githubsig = env.request.headers["X-Hub-Signature"]
         elsif webhook_secret.empty? && env.request.headers.has_key?("X-Hub-Signature") # site not configured, but repo configured
           githubsig = env.request.headers["X-Hub-Signature"]
           do401 env, "Unauthorized, Please add webhook_secret for your site configuration."
@@ -378,7 +391,7 @@ module TFWeb
         else # Both not configured
           ignore_security = true
         end
-        
+
         if (ignore_security || signature == githubsig) && pushed_branch == default_branch
           self.handle_update(env, name, true)
         end
