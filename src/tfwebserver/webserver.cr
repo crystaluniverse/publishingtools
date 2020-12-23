@@ -197,7 +197,7 @@ module TFWeb
       Logger.info { "trying to update #{name} force? #{force} (max allowed updates: #{max_requests})" }
 
       if UpdateRequets.get >= max_requests
-        Logger.info { "maximum update requests of {max_requests} reached" }
+        Logger.info { "maximum update requests of #{max_requests} reached" }
         message = "Many update requests are still in progress"
         return render "src/tfwebserver/views/update/error.ecr"
       end
