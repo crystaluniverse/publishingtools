@@ -14,6 +14,8 @@ module TFWeb
 
     @@link_expander = LinkExpander.new
 
+    DEFAULT_MAX_UPDATES = Int64.new(10)
+
     class ACLGroup
       property name = ""
       property description = ""
@@ -141,9 +143,16 @@ module TFWeb
 
     def self.server_config
       serverconfig = @@config.not_nil!["server"].as(Hash)
+      if serverconfig.has_key?("max_update_requests")
+        max_requests = serverconfig["max_update_requests"].as(Int64)
+      else
+        max_requests = DEFAULT_MAX_UPDATES
+      end
+
       {
-        "port" => serverconfig["port"].as(Int64),
-        "addr" => serverconfig["addr"].as(String),
+        "port"                => serverconfig["port"].as(Int64),
+        "addr"                => serverconfig["addr"].as(String),
+        "max_update_requests" => max_requests,
       }
     end
 
